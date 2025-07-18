@@ -45,7 +45,7 @@ impl TodoList {
         };
 
         self.todos.push(todo);
-        Ok(self.todos.last().unwrap())
+        Ok(self.todos.last().expect("Todo just added should exist"))
     }
 
     pub fn remove_todo(&mut self, id: Uuid) -> Result<Todo, String> {
@@ -83,14 +83,14 @@ impl TodoList {
         self.todos.iter().filter(|todo| todo.completed).collect()
     }
 
-    pub fn save_to_file(&self, path: &str) -> Result<(), Box<dyn std::error::Error>> {
+    pub fn save_to_file(&self, _path: &str) -> Result<(), Box<dyn std::error::Error>> {
         // TODO: Implement persistence
-        todo!()
+        Err("save_to_file not yet implemented".into())
     }
 
-    pub fn load_from_file(path: &str) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn load_from_file(_path: &str) -> Result<Self, Box<dyn std::error::Error>> {
         // TODO: Implement loading from file
-        todo!()
+        Err("load_from_file not yet implemented".into())
     }
 }
 
@@ -223,13 +223,18 @@ mod tests {
         let mut todos = TodoList::new();
 
         // Add multiple todos
-        let todo1_id = todos.add_todo("Todo 1".to_string(), Priority::Low).unwrap().id;
+        let todo1_id = todos
+            .add_todo("Todo 1".to_string(), Priority::Low)
+            .unwrap()
+            .id;
         let _todo2_id = todos
             .add_todo("Todo 2".to_string(), Priority::Medium)
-            .unwrap().id;
+            .unwrap()
+            .id;
         let todo3_id = todos
             .add_todo("Todo 3".to_string(), Priority::High)
-            .unwrap().id;
+            .unwrap()
+            .id;
 
         // Mark some as completed
         todos.toggle_todo(todo1_id).unwrap();
@@ -288,10 +293,14 @@ mod tests {
     #[test]
     fn test_unique_ids() {
         let mut todos = TodoList::new();
-        let todo1_id = todos.add_todo("Todo 1".to_string(), Priority::Low).unwrap().id;
+        let todo1_id = todos
+            .add_todo("Todo 1".to_string(), Priority::Low)
+            .unwrap()
+            .id;
         let todo2_id = todos
             .add_todo("Todo 2".to_string(), Priority::Medium)
-            .unwrap().id;
+            .unwrap()
+            .id;
 
         assert_ne!(todo1_id, todo2_id);
     }
